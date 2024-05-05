@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Scribbl.AI</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+<header>
+    <div class="top">
+        <img src="logo.png" width="20%">
+        <nav>
+            <ul>
+                <li> <a class="nav" href="index.html" index.html”>Home</a></li>
+            </ul>
+
+        </nav>
+    </div>
+</header>
+
+<body>
+
+    <div class="gen">
+        <h1 class="box light-blue-box rokkitt text-center">
+            Theme Generator
+        </h1>
+        <div class="box light-gray-box rokkitt text-center">
+            <h3>Instructions</h3>
+            <h4>Click the "Generate" Button to Generate a theme to Draw!</h4>
+        </div>
+        <h4></h4>
+        <button onclick="generator()" class="btn btn-primary btn-block btn-large">Generate!</button>
+        <h1 class="jumbotron text-center rokkitt" id="name">It will appear here</h1>
+    </div>
+
+    <p><label>Drawing tool: <select id="dtool">
+                <option value="line">Line</option>
+                <option value="rect">Rectangle</option>
+                <option value="pencil">Pencil</option>
+            </select></label></p>
+    <div id="container">
+        <canvas id="imageView" width="400" height="400"></canvas>
+        <button class="btn" id="generateBtn">Generate AI Image</button>
+        <div id="output"></div>
+
+
+        <script>
+            function initCanvas() {
+                const canvas = document.getElementById('imageView');
+                const ctx = canvas.getContext('2d');
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000';
+
+                let isDrawing = false;
+                // Event listeners to draw on canvas
+                canvas.addEventListener('mousedown', (e) => {
+                    isDrawing = true;
+                    ctx.beginPath();
+                    [lastX, lastY] = [e.offsetX, e.offsetY];
+                });
+
+                canvas.addEventListener('mousemove', (e) => {
+                    if (!isDrawing) return;
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+                    [lastX, lastY] = [e.offsetX, e.offsetY];
+                });
+
+                canvas.addEventListener('mouseup', () => {
+                    isDrawing = false;
+                });
+
+                canvas.addEventListener('mouseout', () => {
+                    isDrawing = false;
+                });
+            }
+
+            function convertToAIImage() {
+                const canvas = document.getElementById('imageView');
+                const dataURL = canvas.toDataURL();
+
+                document.getElementById('output').innerText = 'Generating AI Image...';
+                // Deep AI intergration 
+                // document.getElementById('local.png').addEventListener('change', async function() {
+                //  const formData = new FormData();
+                //    formData.append('text', this.files[0]);
+
+                //   const resp = await fetch('https://api.deepai.org/api/text2img', {
+                //     method: 'POST',
+                //     headers: {
+                //         'api-key': 'YOUR_API_KEY' // no API key
+                //      },
+                //      body: formData
+                //  });
+
+                //    const data = await resp.json();
+                //   console.log(data);
+                //});
+                setTimeout(() => {
+                    const img = new Image();
+                    img.src = dataURL;
+                    document.getElementById('output').innerHTML = '';
+                    document.getElementById('output').appendChild(img);
+                }, 2000);
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                initCanvas(); 
+
+                document.getElementById('generateBtn').addEventListener('click', convertToAIImage);
+            });
+
+        </script>
+    </div>
+
+    <script type="text/javascript" src="javascript.js"></script>
+</body>
+
+</html>
